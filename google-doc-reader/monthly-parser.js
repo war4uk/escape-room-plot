@@ -75,7 +75,7 @@ function getDayPaymentInfo(filteredCells, dayTitleCell, minRowIndex, maxRowIndex
 
     let dayPaymentInfo = {
         date: moment(dayTitleCell.value, docMetadata.dateFormat),
-        roomsPaymentInfos: []
+        roomsPaymentInfos: {}
     };
 
 
@@ -84,13 +84,12 @@ function getDayPaymentInfo(filteredCells, dayTitleCell, minRowIndex, maxRowIndex
         let dayCells = filteredCells.filter(cell => (cell.row > minRowIndex) && (cell.row < maxRowIndex));
 
         let roomPaymentInfo = {
-            roomName: docMetadata.questNames[roomInd],
             paymentsCash: filterAndParseByColIndex(dayCells, roomColBaseIndex + docMetadata.paymentCashIndexInRoom),
             payments: filterAndParseByColIndex(dayCells, roomColBaseIndex + docMetadata.paymentIndexInRoom),
             paymentsCertificate: filterAndParseByColIndex(dayCells, roomColBaseIndex + docMetadata.paymentCertificateIndexInRoom)
         }
 
-        dayPaymentInfo.roomsPaymentInfos.push(roomPaymentInfo);
+        dayPaymentInfo.roomsPaymentInfos[docMetadata.questNames[roomInd]] = roomPaymentInfo;
     }
 
     return dayPaymentInfo;
