@@ -4,19 +4,40 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "watchify wwwroot/app.js -o wwwroot/static/bundle.js -t [ babelify --presets [ es2015 react] ] -p [ browserify-css --autoInject=true ]"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.9.1",
+    "babel-plugin-transform-regenerator": "^6.6.5",
+    "babel-polyfill": "^6.7.4",
+    "babel-preset-react": "^6.5.0",
+    "c3": "^0.4.11-rc4",
+    "c3-react": "^0.1.13",
     "es6-promisify": "^3.0.0",
     "google-spreadsheet": "^2.0.0",
-    "moment": "^2.12.0"
+    "koa": "^1.2.0",
+    "koa-static": "^2.0.0",
+    "moment": "^2.12.0",
+    "react": "^0.14.7",
+    "react-dom": "^0.14.7",
+    "react-redux": "^4.4.1",
+    "redux": "^3.3.1"
   },
   "devDependencies": {
     "babel": "^6.5.2",
     "babel-plugin-transform-object-rest-spread": "^6.6.5",
     "babel-preset-es2015": "^6.6.0",
-    "babel-register": "^6.7.2"
+    "babel-register": "^6.7.2",
+    "babelify": "^7.2.0",
+    "browserify-css": "^0.9.1",
+    "watchify": "^3.7.0"
+  },
+  "browserify-css": {
+    "autoInject": true,
+    "minify": true,
+    "rootDir": "."
   }
 }
