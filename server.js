@@ -15,21 +15,19 @@ const app = koa();
 app.use(serveStatic('./wwwroot'));
 app.listen(3333);
 
-let data;
+let weekSplittedDays = [];
 
 app.use(function* () {
-    this.body = data;
+    this.body = formatAggregation(getIncomeByWeek(weekSplittedDays));
 });
 
 moment.locale('ru');
 
 getSheetInfo()
     .then(info => Promise.all(info.worksheets.filter(worksheet => isMonthlyWorkSheet(worksheet)).map(worksheet => parseMonthEntry(worksheet))))
-    .then(payingInfos => [].concat(...payingInfos).sort(sortPayingInfos))
-    .then(sortedPayingInfos => splitDaysByWeek(sortedPayingInfos))
-    .then(weekSplittedDays => {
-        data = getIncomeByWeek(weekSplittedDays).map(aggregatedInfo => ({ date: aggregatedInfo.date.format(), aggregatedRoomPayments: aggregatedInfo.aggregatedRoomPayments }));
-        console.log(data);
+    .then(payingInfos => [].concat(...payingInfos).filter(payingInfo => payingInfo.date.isAfter(moment("2016-01-31"))).sort(sortPayingInfos))
+    .then(sortedPayingInfos => {
+        weekSplittedDays = splitDaysByWeek(sortedPayingInfos)
     })
 
     .catch(err => console.log('error occured: ' + err));
@@ -40,4 +38,11 @@ function isMonthlyWorkSheet(worksheet) {
 
 function sortPayingInfos(dayInfo1, dayInfo2) {
     return dayInfo1.date.valueOf() - dayInfo2.date.valueOf();
+}
+
+function formatAggregation(aggregatedInfos) {
+    return aggregatedInfos.map(aggregatedInfo => ({
+        date: aggregatedInfo.date.format(),
+        aggregatedRoomPayments: aggregatedInfo.aggregatedRoomPayments
+    }));
 }

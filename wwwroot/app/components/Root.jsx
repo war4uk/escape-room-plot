@@ -4,34 +4,28 @@ import React from 'react';
 import Chart from './Chart.jsx';
 import axios from 'axios';
 
-
-const data = {
-    columns: [
-        ['data1', 30, 200, 100, 400, 150, 250],
-        ['data2', 50, 20, 10, 40, 15, 25]
-    ]
-};
-
-let options = {};
-
-const type = "bar";//"bar" // {"line","bar","pie", "multiBar","lineBar"}
+import generateChartData from '../generate-chart-data';
 
 export default class Root extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = { totalByWeekData: null };
+    }
+
     render() {
-        return (
-            <div>
-                <div id="testchart"></div>
-                <Chart data={data} element='testchart' type='lineBar' options={{}}/>
-            </div>
+        return !!this.state.totalByWeekData && (
+            <Chart data={this.state.totalByWeekData} elementId='totalByWeek'/>
         );
     }
 
     componentDidMount() {
-        axios.get('')
-            .then(function(response) {
-                console.log(response);
+        axios.get('test')
+            .then(response => {
+                this.setState({ totalByWeekData: generateChartData(response.data) });
             })
             .catch(function(response) {
+                console.log("error while fetching data");
                 console.log(response);
             });
     }
