@@ -15,7 +15,7 @@ app.use(serveStatic('./wwwroot'));
 app.listen(3333);
 
 app.use(function* () {
-  const weekGroupedPayments = getDayPaymentInfosGroupedByWeek();
+  const weekGroupedPayments = getDayPaymentInfosGroupedByWeek().filter(weekPayments => weekPayments[0].date.isAfter(moment("2016-01-31")));
 
   this.body = formatAggregation(getIncomeByWeek(weekGroupedPayments));
 });
