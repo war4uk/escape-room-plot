@@ -3,7 +3,7 @@
 import GoogleSpreadsheet from 'google-spreadsheet';
 import fs from 'fs';
 import promisify from 'es6-promisify';
-import docMetadata from '../spreadsheet-metadata';
+import { docMetadata } from '../metadata';
 
 const account_info = JSON.parse(fs.readFileSync('./cfg/service-account-creds.json', 'utf8'));
 

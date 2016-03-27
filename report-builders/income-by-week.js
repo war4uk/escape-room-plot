@@ -1,33 +1,33 @@
-import docMetadata from '../spreadsheet-metadata';
-import sumDayPayment from './sum-payments-for-day'
+import { docMetadata } from '../metadata';
+import { sumDayPayments } from './day-aggregation-functions'
 
 export default (sortedWeekInfos) => {
-    return sortedWeekInfos
-        .map(sortedWeekInfo => aggregateWeekInformation(sortedWeekInfo));
+  return sortedWeekInfos
+    .map(sortedWeekInfo => aggregateWeekInformation(sortedWeekInfo));
 }
 
 function aggregateWeekInformation(sortedWeekInfo) {
-    let weekDate = sortedWeekInfo[0].date;
+  let weekDate = sortedWeekInfo[0].date;
 
-    return {
-        date: weekDate,
-        aggregatedRoomPayments: reduceRoomPayment(sortedWeekInfo)
-    };
+  return {
+    date: weekDate,
+    aggregatedRoomPayments: reduceRoomPayment(sortedWeekInfo)
+  };
 }
 
 function reduceRoomPayment(sortedWeekInfo) {
-    let roomPaymentInfos = {};
-    docMetadata.questNames.forEach(name => (roomPaymentInfos[name] = 0));
+  let roomPaymentInfos = {};
+  docMetadata.questNames.forEach(name => (roomPaymentInfos[name] = 0));
 
-    return sortedWeekInfo.reduce(
-        (prevValue, curPaymentInfo) => {
-            docMetadata.questNames.forEach(name => {
-                prevValue[name] += sumDayPayment(curPaymentInfo.roomsPaymentInfos[name]);
-            })
+  return sortedWeekInfo.reduce(
+    (prevValue, curPaymentInfo) => {
+      docMetadata.questNames.forEach(name => {
+        prevValue[name] += sumDayPayments(curPaymentInfo.roomsPaymentInfos[name]);
+      })
 
-            return prevValue;
-        },
-        roomPaymentInfos
-    )
+      return prevValue;
+    },
+    roomPaymentInfos
+  )
 }
 

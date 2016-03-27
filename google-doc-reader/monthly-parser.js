@@ -1,5 +1,5 @@
 'use strict';
-import docMetadata from '../spreadsheet-metadata';
+import { docMetadata } from '../metadata';
 import promisify from 'es6-promisify';
 import moment from 'moment';
 
