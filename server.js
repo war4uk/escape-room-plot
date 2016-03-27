@@ -3,46 +3,31 @@ require("babel-polyfill");
 
 import koa from 'koa';
 import serveStatic from 'koa-static';
-
-import { getSheetInfo } from './google-doc-reader/spreadsheet-reader';
-import { parseMonthEntry } from './google-doc-reader/monthly-parser';
-import splitDaysByWeek from './report-builders/split-by-week'
+import {updateFromGoogleDoc, getDayPaymentInfosGroupedByWeek} from './persisted-data/persisted-data';
 
 import getIncomeByWeek from './report-builders/income-by-week'
 import moment from 'moment';
+
+const refreshInterval = 60 * 60 * 1000; //once a hour
 
 const app = koa();
 app.use(serveStatic('./wwwroot'));
 app.listen(3333);
 
-let weekSplittedDays = [];
-
 app.use(function* () {
-    this.body = formatAggregation(getIncomeByWeek(weekSplittedDays));
+  const weekGroupedPayments = getDayPaymentInfosGroupedByWeek();
+
+  this.body = formatAggregation(getIncomeByWeek(weekGroupedPayments));
 });
 
 moment.locale('ru');
 
-getSheetInfo()
-    .then(info => Promise.all(info.worksheets.filter(worksheet => isMonthlyWorkSheet(worksheet)).map(worksheet => parseMonthEntry(worksheet))))
-    .then(payingInfos => [].concat(...payingInfos).filter(payingInfo => payingInfo.date.isAfter(moment("2016-01-31"))).sort(sortPayingInfos))
-    .then(sortedPayingInfos => {
-        weekSplittedDays = splitDaysByWeek(sortedPayingInfos)
-    })
-
-    .catch(err => console.log('error occured: ' + err));
-
-function isMonthlyWorkSheet(worksheet) {
-    return moment.months().indexOf(worksheet.title.toLowerCase()) > - 1;
-}
-
-function sortPayingInfos(dayInfo1, dayInfo2) {
-    return dayInfo1.date.valueOf() - dayInfo2.date.valueOf();
-}
+updateFromGoogleDoc();
+setInterval(() => updateFromGoogleDoc(), refreshInterval);
 
 function formatAggregation(aggregatedInfos) {
-    return aggregatedInfos.map(aggregatedInfo => ({
-        date: aggregatedInfo.date.format(),
-        aggregatedRoomPayments: aggregatedInfo.aggregatedRoomPayments
-    }));
+  return aggregatedInfos.map(aggregatedInfo => ({
+    date: aggregatedInfo.date.format(),
+    aggregatedRoomPayments: aggregatedInfo.aggregatedRoomPayments
+  }));
 }
