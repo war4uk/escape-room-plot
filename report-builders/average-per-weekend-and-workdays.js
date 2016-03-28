@@ -13,12 +13,9 @@ function getAverageForType(sortedWeekInfos, isGetForWeekends) {
 
     docMetadata.questNames.forEach(name => {
       let roomAvgInfo = avgInfo.aggregatedRoomPayments[name][avgPropName];
-      console.log(result.date.format());
-      console.log(roomAvgInfo);
       result.aggregatedRoomPayments[name] = roomAvgInfo.paymentsSum / (roomAvgInfo.daysCount || 1);
     });
     
-    // console.log(JSON.stringify(result));
     return result;
   });
 

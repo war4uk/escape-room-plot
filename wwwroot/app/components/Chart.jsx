@@ -5,6 +5,7 @@ const ChartComponent = React.createClass({
     propTypes: {
         data: React.PropTypes.object.isRequired,
         elementId: React.PropTypes.string.isRequired,
+        title: React.PropTypes.string.isRequired
     },
 
     chart: null,
@@ -37,10 +38,9 @@ const ChartComponent = React.createClass({
         this._destroyChart();
     },
 
-    _generateChart: function(data,  elementId) {
-        console.log(data);
+    _generateChart: function(data, elementId) {
         let build = Object.assign({}, {
-            bindto: '#' + elementId           
+            bindto: '#' + elementId
         }, data);
         this.chart = c3.generate(build);
     },
@@ -51,10 +51,13 @@ const ChartComponent = React.createClass({
 
     render: function() {
         return (
-            <div className="c3 react-c3"
-                id={this.props.elementId}
-                style={this.props.styles}>
-            </div>
+            <span>
+                <h2 style={{'padding-left': '100px'}}>{this.props.title}</h2>
+                <div className="c3 react-c3"
+                    id={this.props.elementId}
+                    style={this.props.styles}>
+                </div>
+            </span>
         );
     }
 });
