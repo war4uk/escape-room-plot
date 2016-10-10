@@ -1,7 +1,7 @@
 export let sumDayPayments = (dayPayment) => {
     return sumPayments(dayPayment.paymentsCash) +
         sumPayments(dayPayment.payments) +
-        (sumPayments(dayPayment.paymentsCertificate) * 0.15); // we get 15% from certificates
+        (sumPayments(dayPayment.paymentsCertificate) * 0.85); // we get 85% from certificates
 
 }
 
